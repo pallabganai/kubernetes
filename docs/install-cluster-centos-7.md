@@ -40,6 +40,10 @@ yum install -y docker-ce-19.03.12
 systemctl enable --now docker
 ```
 ### Kubernetes Setup
+
+Verify the script from here
+https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
+
 ##### Add yum repository
 ```
 cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
