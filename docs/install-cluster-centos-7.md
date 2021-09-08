@@ -65,8 +65,13 @@ yum-config-manager \
     
 yum install docker-ce docker-ce-cli containerd.io
 systemctl start docker
+exit
 
+sudo groupadd docker
+sudo usermod -aG docker $USER
+newgrp docker 
 docker info
+
 
 
 ```
