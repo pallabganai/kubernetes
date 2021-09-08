@@ -57,18 +57,19 @@ EOF
 sudo setenforce 0
 sudo sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 
-sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
 
-sudo systemctl enable --now kubelet
+
 
 ```
 ##### Install Kubernetes components
 ```
-yum install -y kubeadm-1.18.5-0 kubelet-1.18.5-0 kubectl-1.18.5-0
+sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+
 ```
 ##### Enable and Start kubelet service
 ```
-systemctl enable --now kubelet
+sudo systemctl enable --now kubelet
+
 ```
 ## On kmaster
 ##### Initialize Kubernetes Cluster
