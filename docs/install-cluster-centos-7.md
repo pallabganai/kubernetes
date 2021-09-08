@@ -13,6 +13,7 @@ This documentation guides you in setting up a cluster with one master node and o
 Perform all the commands as root user unless otherwise specified
 ##### Disable Firewall
 ```
+sudo su
 systemctl disable firewalld; systemctl stop firewalld
 ```
 ##### Disable swap
@@ -23,6 +24,7 @@ swapoff -a; sed -i '/swap/d' /etc/fstab
 ```
 setenforce 0
 sed -i --follow-symlinks 's/^SELINUX=enforcing/SELINUX=disabled/' /etc/sysconfig/selinux
+
 ```
 ##### Update sysctl settings for Kubernetes networking
 ```
@@ -34,10 +36,31 @@ sysctl --system
 ```
 ##### Install docker engine
 ```
-yum install -y yum-utils device-mapper-persistent-data lvm2
-yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-yum install -y docker-ce-19.03.12 
-systemctl enable --now docker
+#yum install -y yum-utils device-mapper-persistent-data lvm2
+#yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+#yum install -y docker-ce-19.03.12 
+#systemctl enable --now docker
+#exit
+
+sudo yum remove docker \
+                  docker-client \
+                  docker-client-latest \
+                  docker-common \
+                  docker-latest \
+                  docker-latest-logrotate \
+                  docker-logrotate \
+                  docker-engine
+sudo yum install -y yum-utils
+
+sudo yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux/centos/docker-ce.repo
+    
+sudo yum install docker-ce docker-ce-cli containerd.io
+sudo systemctl start docker
+docker info
+
+
 ```
 ### Kubernetes Setup
 
