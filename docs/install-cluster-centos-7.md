@@ -11,9 +11,12 @@ This documentation guides you in setting up a cluster with one master node and o
 
 ## On both Kmaster and Kworker
 Perform all the commands as root user unless otherwise specified
+```
+sudo su -
+```
+
 ##### Disable Firewall
 ```
-sudo su
 systemctl disable firewalld; systemctl stop firewalld
 ```
 ##### Disable swap
