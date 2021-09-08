@@ -49,7 +49,7 @@ sysctl --system
 #systemctl enable --now docker
 #exit
 
-sudo yum remove docker \
+yum remove docker \
                   docker-client \
                   docker-client-latest \
                   docker-common \
@@ -57,14 +57,15 @@ sudo yum remove docker \
                   docker-latest-logrotate \
                   docker-logrotate \
                   docker-engine
-sudo yum install -y yum-utils
+yum install -y yum-utils
 
-sudo yum-config-manager \
+yum-config-manager \
     --add-repo \
     https://download.docker.com/linux/centos/docker-ce.repo
     
-sudo yum install docker-ce docker-ce-cli containerd.io
-sudo systemctl start docker
+yum install docker-ce docker-ce-cli containerd.io
+systemctl start docker
+
 docker info
 
 
