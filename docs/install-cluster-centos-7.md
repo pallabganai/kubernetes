@@ -147,5 +147,12 @@ kubectl get nodes
 ```
 kubectl get cs
 ```
+##### If the scheduler is not health do this 
+```
+sudo vi /etc/kubernetes/manifests/kube-scheduler.yaml
+```
+Clear the line (spec->containers->command) containing this phrase: - --port=0
+
+That's it.
 
 Have Fun!!
