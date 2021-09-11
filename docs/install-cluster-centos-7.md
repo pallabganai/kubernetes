@@ -41,40 +41,6 @@ net.bridge.bridge-nf-call-iptables = 1
 EOF
 sysctl --system
 ```
-##### Install docker engine
-```
-#yum install -y yum-utils device-mapper-persistent-data lvm2
-#yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-#yum install -y docker-ce-19.03.12 
-#systemctl enable --now docker
-#exit
-
-yum remove docker \
-                  docker-client \
-                  docker-client-latest \
-                  docker-common \
-                  docker-latest \
-                  docker-latest-logrotate \
-                  docker-logrotate \
-                  docker-engine
-yum install -y yum-utils
-
-yum-config-manager \
-    --add-repo \
-    https://download.docker.com/linux/centos/docker-ce.repo
-    
-yum install docker-ce docker-ce-cli containerd.io
-systemctl start docker
-exit
-
-sudo groupadd docker
-sudo usermod -aG docker $USER
-newgrp docker 
-docker info
-
-
-
-```
 ### Kubernetes Setup
 
 Verify the script from here
@@ -90,31 +56,42 @@ enabled=1
 gpgcheck=1
 repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
-exclude=kubelet kubeadm kubectl
 EOF
-
-# Set SELinux in permissive mode (effectively disabling it)
-sudo setenforce 0
-sudo sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 ```
-##### Install Kubernetes components
+##### Reboot the  system to make the above changes effective, relogin as root 
 ```
-sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
-
+shutdown -r
+```
+```
+sudo su -
+```
+##### Install Docker, Kubernetes components
+```
+sudo yum install -y docker kubelet kubeadm kubectl --disableexcludes=kubernetes
 ```
 ##### Enable and Start kubelet service
 ```
-sudo systemctl enable --now kubelet
-
+systemctl start docker
+systemctl enable docker
+docker info
+systemctl start kubelet
+systemctl enable kubelet
+```
+##### Reboot the  system to make the above changes effective, relogin as root. Not sure if this step is required, but any way i did it.
+```
+shutdown -r
+```
+```
+sudo su -
 ```
 ## On kmaster
 ##### Initialize Kubernetes Cluster
 ```
-kubeadm init --apiserver-advertise-address=172.16.16.100 --pod-network-cidr=192.168.0.0/16
+kubeadm init
 ```
 ##### Deploy Calico network
 ```
-kubectl --kubeconfig=/etc/kubernetes/admin.conf create -f https://docs.projectcalico.org/v3.14/manifests/calico.yaml
+kubectl --kubeconfig=/etc/kubernetes/admin.conf delete -f https://docs.projectcalico.org/v3.14/manifests/calico.yaml
 ```
 ##### Cluster join command
 ```
