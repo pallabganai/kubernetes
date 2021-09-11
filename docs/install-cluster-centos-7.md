@@ -13,6 +13,7 @@ This documentation guides you in setting up a cluster with one master node and o
 Perform all the commands as root user unless otherwise specified
 ```
 sudo su -
+yum upgrade -y
 ```
 
 ##### Disable Firewall
@@ -27,7 +28,6 @@ swapoff -a; sed -i '/swap/d' /etc/fstab
 ```
 setenforce 0
 sed -i --follow-symlinks 's/^SELINUX=enforcing/SELINUX=disabled/' /etc/sysconfig/selinux
-
 ```
 ##### Update sysctl settings for Kubernetes networking
 ```
@@ -60,14 +60,22 @@ EOF
 ```
 ##### Reboot the  system to make the above changes effective, relogin as root 
 ```
-shutdown -r
+shutdown -r now
 ```
 ```
 sudo su -
 ```
-##### Install Docker, Kubernetes components
+##### Install Docker components
 ```
-yum install -y docker kubelet kubeadm kubectl
+yum install -y yum-utils
+yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux/centos/docker-ce.repo
+yum install -y docker-ce docker-ce-cli containerd.io
+```
+##### Install Kubernetes components
+```
+yum install -y kubelet kubeadm kubectl
 ```
 ##### Enable and Start kubelet service
 ```
@@ -76,10 +84,22 @@ systemctl enable docker
 docker info
 systemctl start kubelet
 systemctl enable kubelet
+exit
+sudo groupadd docker
+sudo usermod -aG docker $USER
+newgrp docker
+docker run hello-world
+
+cat <<EOF | sudo tee /etc/docker/daemon.json
+{
+"exec-opts": ["native.cgroupdriver=systemd"]
+}
+EOF
+sudo systemctl daemon-reload
 ```
 ##### Reboot the  system to make the above changes effective, relogin as root. Not sure if this step is required, but any way i did it.
 ```
-shutdown -r
+sudo shutdown -r now
 ```
 ```
 sudo su -
@@ -87,25 +107,32 @@ sudo su -
 ## On kmaster
 ##### Initialize Kubernetes Cluster
 ```
-kubeadm init
+kubeadm init --pod-network-cidr=10.244.0.0/16
 ```
+##### To be able to run kubectl commands as non-root user
+If you want to be able to run kubectl commands as non-root user, then as a non-root user perform these
+```
+exit
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+
 ##### Deploy Calico network
 https://docs.projectcalico.org/getting-started/kubernetes/self-managed-onprem/onpremises
 ```
 curl https://docs.projectcalico.org/manifests/calico.yaml -O
 kubectl apply -f calico.yaml
 ```
+or
+##### Deploy Flannel network
+https://github.com/flannel-io/flannel#flannel
+```
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+```
 ##### Cluster join command
 ```
 kubeadm token create --print-join-command
-```
-##### To be able to run kubectl commands as non-root user
-If you want to be able to run kubectl commands as non-root user, then as a non-root user perform these
-```
-mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
-
 ```
 ## On Kworker
 ##### Join the cluster
