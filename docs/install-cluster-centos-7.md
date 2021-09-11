@@ -90,8 +90,10 @@ sudo su -
 kubeadm init
 ```
 ##### Deploy Calico network
+https://docs.projectcalico.org/getting-started/kubernetes/self-managed-onprem/onpremises
 ```
-kubectl --kubeconfig=/etc/kubernetes/admin.conf delete -f https://docs.projectcalico.org/v3.14/manifests/calico.yaml
+curl https://docs.projectcalico.org/manifests/calico.yaml -O
+kubectl apply -f calico.yaml
 ```
 ##### Cluster join command
 ```
