@@ -67,7 +67,7 @@ sudo su -
 ```
 ##### Install Docker, Kubernetes components
 ```
-sudo yum install -y docker kubelet kubeadm kubectl --disableexcludes=kubernetes
+yum install -y docker kubelet kubeadm kubectl
 ```
 ##### Enable and Start kubelet service
 ```
