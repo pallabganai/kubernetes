@@ -153,6 +153,12 @@ sudo vi /etc/kubernetes/manifests/kube-scheduler.yaml
 ```
 Clear the line (spec->containers->command) containing this phrase: - --port=0
 
+##### Check other stuff
+```
+kubectl cluster-info
+kubectl version --short
+```
+
 That's it.
 
 Have Fun!!
