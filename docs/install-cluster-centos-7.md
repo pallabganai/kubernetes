@@ -107,7 +107,7 @@ sudo su -
 ## On kmaster
 ##### Initialize Kubernetes Cluster
 ```
-kubeadm init --pod-network-cidr=10.244.0.0/16
+kubeadm init --apiserver-advertise-address=<master server ip> --pod-network-cidr=10.244.0.0/16
 ```
 ##### To be able to run kubectl commands as non-root user
 If you want to be able to run kubectl commands as non-root user, then as a non-root user perform these
