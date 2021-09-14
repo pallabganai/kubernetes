@@ -150,9 +150,19 @@ kubectl get cs
 ##### If the scheduler is not health do this 
 ```
 sudo vi /etc/kubernetes/manifests/kube-scheduler.yaml
-sudo systemctl restart kubelet.service
 ```
 Clear the line (spec->containers->command) containing this phrase: - --port=0
+
+##### If the scheduler is not health do this 
+```
+sudo vi /etc/kubernetes/manifests/kube-controller-manager.yaml
+```
+Clear the line (spec->containers->command) containing this phrase: - --port=0
+
+##### Restart kubelet
+```
+sudo systemctl restart kubelet.service
+```
 
 ##### Check other stuff
 ```
