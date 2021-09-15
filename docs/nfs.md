@@ -10,7 +10,9 @@ sudo chmod -R 777 /svc/nfs
 sudo vi /etc/exports
 ```
 [adminuser@justvm-haproxynode-0 ~]$ cat /etc/exports
+```
 /svc/nfs/kubedata       *(rw,sync,no_subtree_check,insecure)
+```
 ```
 sudo exportfs -rav
 sudo vi /etc/exports
